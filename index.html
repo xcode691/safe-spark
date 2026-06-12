@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Safe-Spark | Güvenli Akademik Portal</title>
+    <title>Safe-Spark | Akademik Portal</title>
     <style>
         :root { --primary: #38bdf8; --bg: #0b0f19; --card: #111827; }
         body { background: var(--bg); color: #f1f5f9; font-family: 'Segoe UI', sans-serif; margin: 0; }
@@ -10,7 +10,7 @@
         .container { max-width: 900px; margin: 30px auto; padding: 20px; }
         .card { background: var(--card); border: 1px solid #1f2937; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
         .page { display: none; } .page.active { display: block; }
-        .btn { padding: 10px 20px; background: linear-gradient(to right, #38bdf8, #2563eb); color: white; border: none; border-radius: 6px; cursor: pointer; width: 100%; margin-top: 10px; }
+        .btn { padding: 12px; background: linear-gradient(to right, #38bdf8, #2563eb); color: white; border: none; border-radius: 6px; cursor: pointer; width: 100%; font-weight: bold; }
         input { width: 100%; padding: 12px; background: #1f2937; border: 1px solid #374151; color: white; margin: 10px 0; border-radius: 6px; }
     </style>
 </head>
@@ -20,78 +20,116 @@
     <div style="font-weight: 800; color: var(--primary); cursor: pointer;" onclick="switchPage('home')">💥 SAFE-SPARK</div>
     <div>
         <button onclick="switchPage('home')">Keşfet</button>
+        <button onclick="switchPage('publish')">Yayınla</button>
         <button id="navAuth" onclick="switchPage('auth')">Giriş/Kayıt</button>
     </div>
 </nav>
 
 <div class="container">
     <div id="page-home" class="page active">
-        <h2>Sabit Kurucu Yayını</h2>
+        <h2>Kurucu Baş Yapıt</h2>
         <div class="card">
             <h4>Evrimsel Kuantum Doku Teorisi (EQFT)</h4>
             <iframe src="teori.pdf" width="100%" height="400px"></iframe>
+        </div>
+        <h2>Topluluk Yayınları</h2>
+        <div id="feed"></div>
+    </div>
+
+    <div id="page-publish" class="page">
+        <div class="card">
+            <h2>Makale Yayınla</h2>
+            <div id="publishContent">
+                <input type="text" id="pubTitle" placeholder="Makale Başlığı">
+                <input type="file" id="pdfInput" accept="application/pdf">
+                <button class="btn" onclick="handlePublish()">🚀 Yayınla</button>
+            </div>
+            <p id="publishError" style="color:#f87171; display:none;">Önce giriş yapmalısın kanka!</p>
         </div>
     </div>
 
     <div id="page-auth" class="page">
         <div class="card">
-            <h2 id="authModeTitle">Giriş Yap</h2>
-            <input type="email" id="email" placeholder="E-posta adresi">
+            <h2 id="authTitle">Giriş Yap</h2>
+            <input type="email" id="email" placeholder="E-posta">
             <input type="password" id="pass" placeholder="Şifre">
             <button class="btn" onclick="processAuth()">Tamamla</button>
-            <p style="text-align: center; cursor: pointer; margin-top: 15px; color: var(--primary);" 
-               onclick="toggleMode()" id="toggleText">Hesabın yok mu? Kayıt Ol</p>
+            <p style="text-align:center; cursor:pointer; color:var(--primary);" onclick="toggleMode()" id="toggleText">Hesabın yok mu? Kayıt Ol</p>
         </div>
     </div>
 </div>
 
 <script>
     let isLoginMode = true;
+    let isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
 
     function switchPage(p) {
         document.querySelectorAll('.page').forEach(e => e.classList.remove('active'));
         document.getElementById('page-' + p).classList.add('active');
+        if(p === 'publish' && !isLoggedIn) {
+            document.getElementById('publishContent').style.display = 'none';
+            document.getElementById('publishError').style.display = 'block';
+        } else if(p === 'publish') {
+            document.getElementById('publishContent').style.display = 'block';
+            document.getElementById('publishError').style.display = 'none';
+        }
+    }
+
+    // SHA-256 Şifreleme
+    async function sha256(s) {
+        const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+        return Array.from(new Uint8Array(b)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    // Kayıt / Giriş Mantığı
+    async function processAuth() {
+        const email = document.getElementById('email').value;
+        const pass = await sha256(document.getElementById('pass').value);
+        if(!isLoginMode) {
+            localStorage.setItem('user_' + email, pass);
+            alert("Kayıt tamam! Giriş yapabilirsin.");
+            toggleMode();
+        } else {
+            if(localStorage.getItem('user_' + email) === pass) {
+                isLoggedIn = true;
+                localStorage.setItem('isLoggedIn', 'true');
+                document.getElementById('navAuth').innerText = "Çıkış";
+                switchPage('home');
+            } else { alert("Hatalı şifre!"); }
+        }
+    }
+
+    // PDF Yayınlama Mantığı
+    function handlePublish() {
+        const file = document.getElementById('pdfInput').files[0];
+        const title = document.getElementById('pubTitle').value;
+        if(!file || !title) return alert("Başlık ve dosya seç!");
+        
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            let papers = JSON.parse(localStorage.getItem('papers') || '[]');
+            papers.push({ title, data: e.target.result });
+            localStorage.setItem('papers', JSON.stringify(papers));
+            loadFeed();
+            switchPage('home');
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function loadFeed() {
+        const feed = document.getElementById('feed');
+        feed.innerHTML = JSON.parse(localStorage.getItem('papers') || '[]').map(p => `
+            <div class="card"><h4>${p.title}</h4><iframe src="${p.data}" width="100%" height="300px"></iframe></div>
+        `).join('');
     }
 
     function toggleMode() {
         isLoginMode = !isLoginMode;
-        document.getElementById('authModeTitle').innerText = isLoginMode ? "Giriş Yap" : "Kayıt Ol";
-        document.getElementById('toggleText').innerText = isLoginMode ? "Hesabın yok mu? Kayıt Ol" : "Zaten hesabın var mı? Giriş Yap";
+        document.getElementById('authTitle').innerText = isLoginMode ? "Giriş Yap" : "Kayıt Ol";
+        document.getElementById('toggleText').innerText = isLoginMode ? "Hesabın yok mu? Kayıt Ol" : "Giriş Yap";
     }
 
-    // SHA-256 Şifreleme (Güvenlik için)
-    async function sha256(message) {
-        const msgUint8 = new TextEncoder().encode(message);
-        const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
-        return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
-    }
-
-    async function processAuth() {
-        const email = document.getElementById('email').value;
-        const pass = document.getElementById('pass').value;
-        const hash = await sha256(pass);
-
-        if (!isLoginMode) {
-            // KAYIT OLMA
-            if(localStorage.getItem('user_' + email)) {
-                alert("Bu e-posta zaten kayıtlı!");
-            } else {
-                localStorage.setItem('user_' + email, hash);
-                alert("Kayıt başarılı! Şimdi giriş yapabilirsiniz.");
-                toggleMode();
-            }
-        } else {
-            // GİRİŞ YAPMA
-            const savedHash = localStorage.getItem('user_' + email);
-            if(savedHash && savedHash === hash) {
-                alert("Giriş Başarılı!");
-                document.getElementById('navAuth').innerText = "Profil";
-                switchPage('home');
-            } else {
-                alert("Hatalı e-posta veya yanlış şifre!");
-            }
-        }
-    }
+    window.onload = loadFeed;
 </script>
 </body>
 </html>
