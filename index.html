@@ -2,152 +2,69 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Safe-Spark | Evrimsel Kuantum Araştırmaları & Akademik Yayın Platformu</title>
-    <meta name="description" content="Safe-Spark Evrimsel Kuantum Teorisi ve bağımsız araştırmacılar için akademik makale yayınlama platformu.">
-    <script>
-        window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']], processEscapes: true } };
-    </script>
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <title>Safe-Spark | Akademik Yayın Platformu</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background-color: #0b0f19; color: #f1f5f9; line-height: 1.6; }
-        nav { background-color: #111827; border-bottom: 1px solid #1f2937; padding: 15px 30px; position: fixed; width: 100%; top: 0; display: flex; justify-content: space-between; align-items: center; z-index: 100; }
-        .logo { font-size: 20px; font-weight: 800; background: linear-gradient(to right, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; cursor: pointer; }
-        .nav-links { display: flex; gap: 20px; align-items: center; }
-        nav button { background: none; border: none; color: #9ca3af; font-size: 14px; font-weight: 600; cursor: pointer; }
-        nav button:hover, nav button.active { color: #38bdf8; }
-        .btn-portal { background: linear-gradient(to right, #2563eb, #4f46e5); color: white; padding: 8px 18px; border-radius: 6px; }
-        .container { max-width: 1100px; margin: 100px auto 50px auto; padding: 0 20px; }
-        .page { display: none; } .page.active { display: block; }
-        .auth-card { background-color: #111827; border: 1px solid #1f2937; border-radius: 12px; max-width: 450px; margin: 40px auto; padding: 35px; text-align: center; }
-        .form-group { text-align: left; margin-bottom: 20px; }
-        .form-group label { display: block; font-size: 13px; color: #9ca3af; margin-bottom: 6px; }
-        .form-group input, .form-group textarea { width: 100%; background-color: #1f2937; border: 1px solid #374151; border-radius: 6px; padding: 12px; color: white; }
-        .btn-submit { width: 100%; background: linear-gradient(to right, #38bdf8, #2563eb); color: white; padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        .user-welcome-bar { background-color: #1e1b4b; border: 1px solid #4338ca; padding: 12px 20px; border-radius: 8px; margin-bottom: 25px; display: none; justify-content: space-between; align-items: center; }
-        .pdf-frame-wrapper { margin-top: 20px; width: 100%; height: 750px; border-radius: 8px; border: 1px solid #334155; background-color: #1e293b; }
-        .status-msg { padding: 12px; border-radius: 6px; margin-bottom: 15px; display: none; }
-        .toggle-auth { margin-top: 15px; font-size: 13px; color: #38bdf8; cursor: pointer; text-decoration: underline; }
+        body { background: #0b0f19; color: #f1f5f9; font-family: 'Segoe UI', sans-serif; margin: 0; }
+        nav { background: #111827; padding: 15px 30px; display: flex; justify-content: space-between; border-bottom: 1px solid #1f2937; }
+        .container { max-width: 900px; margin: 40px auto; padding: 20px; }
+        .card { background: #111827; border: 1px solid #1f2937; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
+        .btn { padding: 10px 20px; background: #2563eb; color: white; border: none; border-radius: 6px; cursor: pointer; }
+        input, textarea { width: 100%; padding: 10px; background: #1f2937; border: 1px solid #374151; color: white; margin-top: 5px; }
+        .pdf-list { margin-top: 20px; }
     </style>
 </head>
 <body>
 
 <nav>
-    <div class="logo" onclick="switchPage('home')">💥 SAFE-SPARK PORTAL</div>
-    <div class="nav-links">
-        <button id="nav-home" class="active" onclick="switchPage('home')">Keşfet</button>
-        <button id="nav-publish" onclick="switchPage('publish')">Makale Yayınla</button>
-        <button id="nav-auth" class="btn-portal" onclick="switchPage('auth')">Giriş Yap</button>
-    </div>
+    <div style="font-weight: 800; color: #38bdf8;">💥 SAFE-SPARK PORTAL</div>
+    <button onclick="document.getElementById('uploadSection').scrollIntoView()">Makale Yükle</button>
 </nav>
 
 <div class="container">
-    <div id="userWelcome" class="user-welcome-bar">
-        <div>🤖 Aktif Oturum: <strong id="loggedUserEmail"></strong></div>
-        <button onclick="handleLogout()" style="color:#f87171; cursor:pointer; background:none; border:none;">Oturumu Kapat</button>
+    <div class="card" id="uploadSection">
+        <h2>Yeni Makale Yükle (PDF)</h2>
+        <input type="text" id="paperTitle" placeholder="Makale Başlığı">
+        <input type="file" id="pdfInput" accept="application/pdf" style="margin-top:10px;">
+        <button class="btn" style="margin-top:10px;" onclick="handleUpload()">Yükle ve Yayınla</button>
     </div>
 
-    <div id="page-home" class="page active">
-        <div class="pdf-frame-wrapper">
-            <iframe src="teori.pdf" width="100%" height="100%"></iframe>
-        </div>
-    </div>
-
-    <div id="page-publish" class="page">
-        <div class="auth-card" style="max-width: 800px; text-align: left;">
-            <h2>Yeni Makale Gönderimi</h2>
-            <div id="publishLocked">
-                <p style="color: #f87171;">⚠️ Makale yayınlamak için giriş yapın.</p>
-            </div>
-            <form id="publishForm" style="display: none;" onsubmit="handlePublish(event)">
-                <div class="form-group"><label>Başlık</label><input type="text" id="pubTitle" required></div>
-                <div class="form-group"><label>İçerik</label><textarea id="pubContent" rows="5" required></textarea></div>
-                <button type="submit" class="btn-submit">YAYINLA</button>
-            </form>
-        </div>
-    </div>
-
-    <div id="page-auth" class="page">
-        <div class="auth-card">
-            <h2 id="authTitle">Giriş Yap</h2>
-            <div id="authStatus" class="status-msg"></div>
-            <form onsubmit="handleAuth(event)">
-                <div class="form-group"><label>E-Posta</label><input type="email" id="userEmail" required></div>
-                <div class="form-group"><label>Şifre</label><input type="password" id="userPassword" required></div>
-                <button type="submit" class="btn-submit" id="authSubmitBtn">Giriş Yap</button>
-            </form>
-            <div class="toggle-auth" id="toggleAuthText" onclick="toggleAuthMode()">Hesabın yok mu? Kayıt Ol</div>
-        </div>
-    </div>
+    <h3>Küresel Araştırmalar</h3>
+    <div id="feed" class="pdf-list"></div>
 </div>
 
 <script>
-    let isLoginMode = true;
-    let currentUser = localStorage.getItem('sparkUser');
+    // Sayfa yüklendiğinde kayıtlı makaleleri getir
+    window.onload = loadPapers;
 
-    function switchPage(p) {
-        document.querySelectorAll('.page').forEach(e => e.classList.remove('active'));
-        document.getElementById('page-' + p).classList.add('active');
+    function handleUpload() {
+        const title = document.getElementById('paperTitle').value;
+        const fileInput = document.getElementById('pdfInput');
+        const file = fileInput.files[0];
+
+        if (!title || !file) return alert("Başlık ve PDF gerekli!");
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const paper = { title: title, data: e.target.result };
+            let papers = JSON.parse(localStorage.getItem('papers') || '[]');
+            papers.push(paper);
+            localStorage.setItem('papers', JSON.stringify(papers));
+            loadPapers();
+            alert("Makale başarıyla paylaşıldı!");
+        };
+        reader.readAsDataURL(file);
     }
 
-    function toggleAuthMode() {
-        isLoginMode = !isLoginMode;
-        document.getElementById('authTitle').innerText = isLoginMode ? "Giriş Yap" : "Kayıt Ol";
-        document.getElementById('authSubmitBtn').innerText = isLoginMode ? "Giriş Yap" : "Kayıt Ol";
-        document.getElementById('toggleAuthText').innerText = isLoginMode ? "Hesabın yok mu? Kayıt Ol" : "Zaten hesabın var mı? Giriş Yap";
+    function loadPapers() {
+        const feed = document.getElementById('feed');
+        const papers = JSON.parse(localStorage.getItem('papers') || '[]');
+        feed.innerHTML = papers.map(p => `
+            <div class="card">
+                <h4>${p.title}</h4>
+                <iframe src="${p.data}" width="100%" height="400px"></iframe>
+            </div>
+        `).join('');
     }
-
-    async function sha256(str) {
-        const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
-        return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
-    }
-
-    async function handleAuth(e) {
-        e.preventDefault();
-        const email = document.getElementById('userEmail').value;
-        const pass = document.getElementById('userPassword').value;
-        const hash = await sha256(pass);
-        const status = document.getElementById('authStatus');
-
-        if (!isLoginMode) {
-            // KAYIT OL
-            if (localStorage.getItem('user_' + email)) {
-                status.style.display = "block"; status.innerText = "Bu e-posta zaten var!"; status.style.background = "#991b1b";
-            } else {
-                localStorage.setItem('user_' + email, hash);
-                status.style.display = "block"; status.innerText = "Kayıt başarılı!"; status.style.background = "#065f46";
-                toggleAuthMode();
-            }
-        } else {
-            // GİRİŞ YAP
-            if (localStorage.getItem('user_' + email) === hash) {
-                localStorage.setItem('sparkUser', email);
-                currentUser = email;
-                updateAuthUI();
-                switchPage('home');
-            } else {
-                status.style.display = "block"; status.innerText = "Hatalı e-posta veya şifre!"; status.style.background = "#991b1b";
-            }
-        }
-    }
-
-    function updateAuthUI() {
-        if (currentUser) {
-            document.getElementById('userWelcome').style.display = 'flex';
-            document.getElementById('loggedUserEmail').innerText = currentUser;
-            document.getElementById('nav-auth').innerText = "Hesabım";
-            document.getElementById('publishLocked').style.display = 'none';
-            document.getElementById('publishForm').style.display = 'block';
-        }
-    }
-
-    function handleLogout() {
-        localStorage.removeItem('sparkUser');
-        location.reload();
-    }
-
-    updateAuthUI();
 </script>
 </body>
 </html>
