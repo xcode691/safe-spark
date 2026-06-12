@@ -3,106 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Safe-Spark | Evrimsel Kuantum Doku Teorisi</title>
+    <title>Safe-Spark | Kuantum Doku Teorisi (EQFT)</title>
     
-    <meta name="description" content="Emir Bertuğ Kedikli tarafından geliştirilen Safe-Spark projesi ve Evrimsel Kuantum Doku Teorisi (EQFT) resmi web sitesi. Planck ölçeğinde uzay-zaman dinamikleri.">
-    <meta name="keywords" content="Safe-Spark, Evrimsel Kuantum Doku Teorisi, EQFT, Emir Bertuğ Kedikli, kuantum fiziği, uzay zaman dokusu, Planck ölçeği, kütleçekim, teorik fizik, makale">
-    <meta name="author" content="Emir Bertuğ Kedikli">
+    <meta name="description" content="Emir tarafından geliştirilen Safe-Spark projesi ve Kuantum Doku Teorisi (EQFT) resmi web sitesi. Planck ölçeğinde Planck Düğümleri ve Emir Katsayısı dinamikleri.">
+    <meta name="keywords" content="Safe-Spark, Kuantum Doku Teorisi, EQFT, Emir, Emir Katsayısı, kuantum fiziği, uzay zaman dokusu, Planck ölçeği, kütleçekim, teorik fizik, makale, running g">
+    <meta name="author" content="Emir">
     <meta name="robots" content="index, follow">
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/dist/選擇.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
 
     <style>
         body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            font-family: 'Times New Roman', Times, serif; 
             line-height: 1.8; 
-            max-width: 900px; 
-            margin: 40px auto; 
-            padding: 0 20px; 
-            background-color: #f4f6f8; 
-            color: #2c3e50; 
+            max-width: 850px; 
+            margin: 50px auto; 
+            padding: 0 30px; 
+            background-color: #ffffff; 
+            color: #111111; 
         }
         header { 
             text-align: center; 
-            border-bottom: 3px solid #3498db; 
+            border-bottom: 2px solid #111111; 
             padding-bottom: 20px; 
-            margin-bottom: 25px; 
+            margin-bottom: 30px; 
         }
         h1 { 
-            color: #2c3e50; 
-            font-size: 32px; 
-            margin-bottom: 10px; 
+            font-size: 28px; 
+            margin-bottom: 5px; 
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        h3 {
+            font-size: 18px;
+            font-weight: normal;
+            margin-top: 5px;
         }
         h2 { 
-            color: #2980b9; 
-            border-left: 5px solid #3498db; 
-            padding-left: 15px; 
+            font-size: 20px; 
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
             margin-top: 40px; 
+            text-transform: uppercase;
+        }
+        h4 {
+            font-size: 16px;
+            margin-top: 20px;
+            margin-bottom: 5px;
         }
         .meta { 
-            font-style: italic; 
-            color: #7f8c8d; 
+            font-size: 14px;
             margin-bottom: 20px; 
         }
         
-        /* Profesyonel İndirme Butonu Alanı */
+        /* Akademik İndirme Butonu */
         .download-container {
             text-align: center;
-            margin: 25px 0;
+            margin: 20px 0 30px 0;
         }
         .download-btn {
-            background-color: #2ecc71;
+            background-color: #111111;
             color: white;
-            padding: 12px 30px;
-            font-size: 16px;
+            padding: 10px 25px;
+            font-size: 14px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             font-weight: bold;
             border: none;
-            border-radius: 25px;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4);
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             text-decoration: none;
             display: inline-block;
         }
         .download-btn:hover {
-            background-color: #27ae60;
-            box-shadow: 0 6px 20px rgba(39, 174, 96, 0.6);
-            transform: translateY(-2px);
-        }
-        .download-btn:active {
-            transform: translateY(1px);
+            background-color: #333333;
         }
 
         .abstract { 
-            background: #ffffff; 
-            padding: 25px; 
-            border-radius: 8px; 
+            background: #f9f9f9; 
+            padding: 20px; 
+            border: 1px solid #dddddd;
             margin: 20px 0; 
-            font-weight: 500; 
-            border-left: 5px solid #3498db;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            font-size: 15px;
+            text-align: justify;
         }
         p { 
             text-align: justify; 
-            text-indent: 30px; 
+            text-indent: 40px; 
             margin-bottom: 15px;
+            font-size: 16px;
+        }
+        .formula {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 18px;
+        }
+        footer {
+            margin-top: 60px;
+            border-top: 1px solid #111111;
+            padding-top: 15px;
+            font-size: 12px;
+            text-align: center;
+            color: #555555;
         }
     </style>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script>
         function indirPDF() {
-            // İndirilecek elementi seçiyoruz
             const element = document.getElementById('makale-icerik');
-            
-            // PDF ayarları
             const opt = {
-                margin:       10,
-                filename:     'Safe-Spark_Evrimsel_Kuantum_Doku_Teorisi.pdf',
+                margin:       15,
+                filename:     'Safe-Spark_Kuantum_Doku_Teorisi_EQFT.pdf',
                 image:        { type: 'jpeg', quality: 0.98 },
                 html2canvas:  { scale: 2 },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
-
-            // Butona basıldığında PDF'i oluşturup indiriyor
             html2pdf().set(opt).from(element).save();
         }
     </script>
@@ -112,37 +136,65 @@
 <div id="makale-icerik">
 
     <header>
-        <h1>Evrimsel Kuantum Doku Teorisi (EQFT)</h1>
-        <h3>Planck Ölçeğinde Uzay-Zaman Dinamikleri, Değişken Kütleçekimsel Etkileşim ve Kozmik Onarım Mekizmaları</h3>
+        <h1>Kuantum Doku Teorisi (EQFT)</h1>
         <div class="meta">
-            <strong>Yazar:</strong> Emir Bertuğ Kedikli <br>
-            <strong>Proje:</strong> Safe-Spark <br>
-            <strong>Yayın Tarihi:</strong> 12 Haziran 2026
+            <strong>Baş Araştırmacı:</strong> Emir <br>
+            <strong>Enstitü:</strong> Safe-Spark Teorik Fizik ve İleri Kuantum Araştırmaları Enstitüsü <br>
+            <strong>Yayın Tarihi:</strong> 29 Nisan 2026
         </div>
     </header>
 
     <div class="download-container">
-        <button class="download-btn" onclick="indirPDF()">📄 Makaleyi PDF Olarak İndir</button>
+        <button class="download-btn" onclick="indirPDF()">📄 AKADEMİK PDF OLARAK İNDİR</button>
     </div>
 
     <div class="abstract">
-        <strong>Özet (Abstract):</strong> Bu çalışmada, genel görelilik ile kuantum mekaniğini birleştirmeyi hedefleyen Evrimsel Kuantum Doku Teorisi (EQFT) sunulmaktadır. Uzay-zamanın statik bir arka plan olmadığı, sürekli evrimleşen dinamik bir kuantum dokusundan meydana geldiği öne sürülmektedir. Planck ölçeğindeki bu dokunun değişken kütleçekimsel etkileşimleri ve evrenin genişlemesi sırasındaki kozmik onarım mekanizmaları matematiksel ve teorik olarak incelenmiştir.
+        <strong>ÖZET:</strong> Bu makale, uzay-zamanın süreklilik arz eden klasik manifold geometrisini reddederek, Planck ölçeğinde ayrık ve dinamik bir yapı birimi olan "Planck Düğümleri" (Planck Nodes) modelini ileri sürmektedir. Emir Katsayısı ($\Gamma$) aracılığıyla tanımlanan topolojik gerilim eşikleri, kütleçekimi sabitinin enerji yoğunluğuna bağlı olarak üstel çözünülürlüğü (Exponential Dissipation) ve karanlık enerji tabanlı onarım mekanizmaları matematiksel olarak türetilmiştir. EQFT, kuantum kütleçekimi problemlerine faz geçişi tabanlı bir çözüm sunar.
     </div>
 
-    <h2>1. Giriş ve Teorik Altyapı</h2>
-    <p>Modern fiziğin en büyük çıkmazlarından biri, makro evreni açıklayan Genel Görelilik Teorisi ile mikro evreni yöneten Kuantum Mekaniği arasındaki uyumsuzluktur. Evrimsel Kuantum Doku Teorisi (EQFT), uzay-zaman sürekliliğini "kuantum iplikçiklerinden" örülmüş dinamik bir doku olarak ele alarak bu iki teoriyi tek bir potada eritmeyi amaçlar. Bu doku, enerji yoğunluğuna bağlı olarak esneyebilir, yırtılabilir ve en önemlisi kendi kendini onarabilir.</p>
+    <h2>1. MATEMATİKSEL ALTYAPI VE BİRİM ANALİZİ</h2>
+    <p>EQFT modelinde uzay-zaman, enerji ve bilginin iletildiği ayrık bir grid yapısıdır. Sistemin kararlılığı, boyutsuzlaştırılmış Emir Katsayısı ($\Gamma$) ile ölçülür. Bu katsayı, yerel enerji-stres yoğunluğunun evrensel Planck limitine olan oranını temsil eder:</p>
+    
+    <div class="formula">
+        $$\Gamma=\rho_{eff}/\rho_{planck}$$
+    </div>
+    
+    <p>Burada $\rho_{eff}$ toplam enerji yoğunluğunu, $\rho_{planck}$ ise uzay-zaman dokusunun teorik maksimum taşıma kapasitesini ifade eder. $\Gamma\rightarrow1$ durumu, dokunun topolojik bütünlüğünü kaybettiği kritik eşiktir.</p>
 
-    <h2>2. Planck Ölçeğinde Uzay-Zaman Dinamikleri</h2>
-    <p>Planck uzunluğunda (1.616 x 10^-35 metre), uzay-zaman pürüzsüz yapısını kaybeder ve kuantum dalgalanmalarının hakim olduğu köpüksü bir dokuya dönüşür. EQFT'ye göre, bu köpüksü yapı rastgele değildir; belirli bir evrimsel algoritma takip ederek sürekli en kararlı enerji geometrisine ulaşmaya çalışır. Maddenin varlığı, bu dokunun ilmek sayısını artırarak yerel kütleçekim alanlarını oluşturur.</p>
+    <h2>2. DEĞİŞKEN KÜTLEÇEKİMİ ETKİLEŞİMİ (RUNNING G)</h2>
+    <p>Teorinin en kritik öngörülerinden biri, kütleçekimi etkileşiminin doku gerilimine bağlı olarak sönümlenmesidir. Yüksek gerilim altında doku iletim kapasitesini kaybeder ve kütleçekimi sabiti ($G$) şu fonksiyonel yapıyı izler:</p>
+    
+    <div class="formula">
+        $$G(\Gamma)=G_{0}\cdot exp(-\Gamma^{2})$$
+    </div>
+    
+    <p>Bu üstel çözünme, kara deliklerin merkezindeki tekillik problemini ortadan kaldırarak maddeyi "faz geçişi" yoluyla yüksek boyutlu enerji formlarına dönüştürür.</p>
 
-    <h2>3. Değişken Kütleçekimsel Etkileşim</h2>
-    <p>Geleneksel teorilerin aksine, EQFT kütleçekim sabitinin (G) evrenin ilk dönemlerinden bu yana tamamen sabit kalmadığını, kuantum dokusunun gerilim katsayısına bağlı olarak yerel dalgalanmalar gösterebileceğini savunur. Büyük kütleli kara deliklerin tekilliğe çökmek yerine, dokunun maksimum gerilim sınırına ulaşmasıyla "kozmik onarım" sürecine girdiğini ve enerjiyi evrenin diğer bölgelerine aktardığını öne sürer.</p>
+    <h2>3. KOZMİK ONARIM VE ALAN TEORİSİ</h2>
+    <p>Karanlık Enerji ($\Lambda$), sistemde bir onarım tensörü olarak işlev görür. Herhangi bir topolojik yırtılma ($\Gamma\ge1$), sistemde anlık bir skaler alan tepkisi doğurur. Bu onarım mekanizması aşağıdaki alan denklemiyle ifade edilir:</p>
+    
+    <div class="formula">
+        $$\exists\Phi_{repair}+m^{2}\Phi_{repair}=8\pi G\cdot\Lambda(\Delta\Gamma)$$
+    </div>
 
-    <h2>4. Kozmik Onarım Mekizmaları</h2>
-    <p>Uzay-zamanda aşırı yüksek enerji yoğunluğu nedeniyle meydana gelen mikroskobik yırtılmalar (solucan delikleri veya tekillikler benzeri yapılar), kuantum dokusunun kendi kendini besleyen geri bildirim döngüleri sayesinde kapatılır. Bu durum, Safe-Spark projesinin de temelini oluşturan, kuantum düzeyindeki enerjiyi stabilize etme ve yönlendirme simülasyonlarına teorik bir zemin hazırlar.</p>
+    <h2>4. TAMAMLAYICI FİZİKSEL YASALAR</h2>
+    
+    <h4>4.1. Doku Hafızası (The Echo Law)</h4>
+    <p>Topolojik onarım sonrası dokuda kalan kalıcı mikro-gerilmeler, ışığın ilerleme doğrultusunda saptanabilir sapmalar (Kozmik Yara İzleri) oluşturur.</p>
+    
+    <h4>4.2. Zamansal Ayrıklık (Temporal Discreteness)</h4>
+    <p>Enerji yoğunluğunun limitlere yaklaştığı bölgelerde, zaman akışı sürekli bir fonksiyondan ziyade, kuantize edilmiş kesikli adımlar halinde ilerler.</p>
+    
+    <h4>4.3. Enerji Devirdaimi</h4>
+    <p>Boyutlar arası sızıntı yapan enerji, sistem dışına çıkmaz; karanlık enerji havuzunu besleyerek evrenin termodinamik dengesini sağlar.</p>
 
-    <h2>5. Sonuç</h2>
-    <p>Evrimsel Kuantum Doku Teorisi, evrenin temel yapısını anlamamız için yeni bir pencere açmaktadır. Gelecekte yapılacak kuantum kütleçekim deneyleri ve Safe-Spark kapsamında geliştirilecek olan enerji simülasyonları, dokunun esneklik katsayısını tam olarak ölçmemize olanak tanıyacaktır.</p>
+    <h2>5. SONUÇ</h2>
+    <p>EQFT, uzay-zamanı pasif bir arka plan olmaktan çıkarıp, dinamik limitleri ve öz-onarım yeteneği olan kompleks bir sistem olarak tanımlamaktadır. Bu model, Genel Görelilik ve Kuantum Mekaniği arasındaki boşluğu "Doku Dinamiği" üzerinden kapatmayı amaçlar.</p>
+
+    <footer>
+        2026 Emir - Safe-Spark Teorik Fizik Yayınları. <br>
+        Tüm hakları saklıdır. Akademik kullanım için kaynak gösterilmesi zorunludur.
+    </footer>
 
 </div>
 </body>
