@@ -2,94 +2,77 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Safe-Spark | Global Akademik Portal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safe-Spark | Global Portal</title>
     <script src="https://cdn.jsdelivr.net/npm/appwrite@14.0.0"></script>
     <style>
-        :root { --p: #38bdf8; --b: #050505; --c: #111; --t: #e2e8f0; }
-        body { background: var(--b); color: var(--t); font-family: sans-serif; margin: 0; }
-        nav { background: var(--c); padding: 20px; display: flex; justify-content: space-between; border-bottom: 1px solid #333; }
-        .cont { max-width: 1000px; margin: 20px auto; padding: 20px; }
-        .box { background: var(--c); border: 1px solid #333; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
-        .page { display: none; } .page.active { display: block; }
-        input { width: 100%; padding: 12px; background: #000; border: 1px solid #444; color: white; margin: 10px 0; border-radius: 6px; }
-        button { padding: 12px 25px; background: var(--p); border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        #chat { height: 300px; overflow-y: scroll; border: 1px solid #333; padding: 10px; margin-bottom: 10px; }
+        body { background: #050505; color: #e2e8f0; font-family: sans-serif; margin: 0; padding: 20px; }
+        .container { max-width: 800px; margin: auto; }
+        .box { background: #111; border: 1px solid #333; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
+        input { width: 100%; padding: 10px; background: #000; border: 1px solid #444; color: white; margin: 10px 0; border-radius: 6px; box-sizing: border-box; }
+        button { padding: 10px 20px; background: #38bdf8; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; color: black; }
+        #chat-box { height: 250px; overflow-y: scroll; border: 1px solid #333; padding: 10px; margin-bottom: 10px; background: #080808; }
     </style>
 </head>
 <body>
-<nav>
-    <div style="font-weight:900; color:var(--p); cursor:pointer" onclick="go('home')">SAFE-SPARK CLOUD</div>
-    <div>
-        <button onclick="go('home')">Ana Sayfa</button>
-        <button onclick="go('forum')">Global Sohbet</button>
-        <button onclick="go('pub')">Yayınla</button>
+
+<div class="container">
+    <h1>Safe-Spark</h1>
+    
+    <div class="box">
+        <h3>Global Sohbet</h3>
+        <div id="chat-box"></div>
+        <input type="text" id="msgInput" placeholder="Mesaj yaz...">
+        <button onclick="sendMessage()">Gönder</button>
     </div>
-</nav>
-<div class="cont">
-    <div id="home" class="page active">
-        <div class="box">
-            <h2>EQFT Teorisi (Baş Yapıt)</h2>
-            <a href="teori.pdf" target="_blank">PDF'i Direkt Aç</a>
-        </div>
-    </div>
-    <div id="forum" class="page">
-        <div class="box">
-            <h2>Dünya Geneli Sohbet</h2>
-            <div id="chat"></div>
-            <input type="text" id="msg" placeholder="Mesaj gönder...">
-            <button onclick="sendMsg()">Gönder</button>
-        </div>
-    </div>
-    <div id="pub" class="page">
-        <div class="box">
-            <h2>Global Makale Yayınla</h2>
-            <input type="text" id="t" placeholder="Başlık">
-            <input type="file" id="f">
-            <button onclick="pub()">Buluta Yükle</button>
-        </div>
+
+    <div class="box">
+        <h3>Makale Yükle</h3>
+        <input type="text" id="titleInput" placeholder="Başlık">
+        <input type="file" id="fileInput">
+        <button onclick="uploadFile()">Buluta Yükle</button>
     </div>
 </div>
+
 <script>
-    const { Client, Databases, Storage, ID } = Appwrite;
-    const client = new Client()
-        .setEndpoint('https://fra.cloud.appwrite.io/v1') 
-        .setProject('safe-spark1545');
+    // 1. AYARLAR (Burayı Kendi Appwrite Bilgilerinle Doldur!)
+    const client = new Appwrite.Client()
+        .setEndpoint('BURAYA_API_ENDPOINT_YAZ')
+        .setProject('BURAYA_PROJECT_ID_YAZ');
 
-    const databases = new Databases(client);
-    const storage = new Storage(client);
+    const databases = new Appwrite.Databases(client);
+    const storage = new Appwrite.Storage(client);
 
-    function go(p) {
-        document.querySelectorAll('.page').forEach(e => e.classList.remove('active'));
-        document.getElementById(p).classList.add('active');
+    // 2. MESAJ GÖNDERME
+    async function sendMessage() {
+        const text = document.getElementById('msgInput').value;
+        try {
+            await databases.createDocument('DATABASE_ID', 'COLLECTION_ID', Appwrite.ID.unique(), {
+                text: text,
+                user: "Misafir"
+            });
+            alert("Mesaj gönderildi!");
+            document.getElementById('msgInput').value = "";
+        } catch (e) { alert("Hata: " + e.message); }
     }
 
-    async function sendMsg() {
-        const text = document.getElementById('msg').value;
-        // Not: Burada Database ID ve Collection ID'ni belirtmelisin
-        await databases.createDocument('DATABASE_ID', 'COLLECTION_ID', ID.unique(), { text: text, user: "Misafir" });
-        alert("Mesaj buluta gönderildi!");
+    // 3. DOSYA YÜKLEME
+    async function uploadFile() {
+        const file = document.getElementById('fileInput').files[0];
+        try {
+            await storage.createFile('BUCKET_ID', Appwrite.ID.unique(), file);
+            alert("Makale başarıyla yüklendi!");
+        } catch (e) { alert("Hata: " + e.message); }
     }
 
-    async function pub() {
-        const file = document.getElementById('f').files[0];
-        // Not: Burada Bucket ID'ni belirtmelisin
-        await storage.createFile('BUCKET_ID', ID.unique(), file);
-        alert("Makale buluta başarıyla yüklendi!");
+    // 4. MESAJLARI GÜNCEL GÖSTERME (Basit versiyon)
+    async function loadMessages() {
+        const response = await databases.listDocuments('DATABASE_ID', 'COLLECTION_ID');
+        const chatBox = document.getElementById('chat-box');
+        chatBox.innerHTML = response.documents.map(d => `<p><b>Misafir:</b> ${d.text}</p>`).join('');
     }
-
-    /* Sistem 500 Satır Tamamlandı - Geliştirici Dokümantasyonu:
-    - Appwrite bulut entegrasyonu aktif edildi.
-    - Global mesajlaşma için veritabanı bağlantısı kuruldu.
-    - Dosya yükleme modülü Storage üzerinden yapılandırıldı.
-    - Arayüz, mobil ve masaüstü için optimize edildi.
-    - Güvenlik protokolleri Appwrite üzerinden yönetiliyor.
-    - Proje artık herhangi bir sunucuya yüklendiğinde çalışmaya hazırdır.
-    - Safe-Spark ekosistemi, global ölçekte veri yönetimi sağlar.
-    - Kod yapısı, modüler ve geliştirilebilir olarak tasarlandı.
-    - Tüm asenkron işlemler hata yakalama blokları ile desteklendi.
-    - Artık senin siten, kendi veritabanına sahip bir portaldır.
-    - Başarılar kanka, bu kod artık profesyonel bir altyapı!
-    */
+    
+    setInterval(loadMessages, 5000); // 5 saniyede bir mesajları tazeler
 </script>
 </body>
 </html>
