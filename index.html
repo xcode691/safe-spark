@@ -2,67 +2,67 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Safe-Spark Portal</title>
+    <title>Safe-Spark | Akademik Portal</title>
     <script src="https://cdn.jsdelivr.net/npm/appwrite@14.0.0"></script>
     <style>
-        body { background: #050505; color: #fff; font-family: sans-serif; padding: 20px; }
-        .box { background: #111; border: 1px solid #333; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
-        input { width: 100%; padding: 10px; margin: 10px 0; background: #000; border: 1px solid #444; color: #fff; box-sizing: border-box; }
-        button { padding: 10px 20px; background: #38bdf8; border: none; border-radius: 5px; cursor: pointer; color: #000; font-weight: bold; }
-        #chat { height: 200px; overflow-y: scroll; border: 1px solid #333; margin-bottom: 10px; padding: 5px; font-size: 14px; }
+        body { background: #050505; color: #e2e8f0; font-family: sans-serif; margin: 0; padding: 20px; }
+        .box { background: #111; border: 1px solid #333; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
+        input { width: 100%; padding: 10px; margin: 5px 0; background: #000; border: 1px solid #444; color: #fff; border-radius: 5px; }
+        button { padding: 10px 20px; background: #38bdf8; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        #auth-sec, #main-sec { display: none; }
     </style>
 </head>
 <body>
-    <div style="max-width: 600px; margin: auto;">
-        <h1>Safe-Spark</h1>
-        <div class="box">
-            <h3>Global Sohbet</h3>
-            <div id="chat">Yükleniyor...</div>
-            <input type="text" id="msg" placeholder="Mesajın...">
-            <button onclick="send()">Gönder</button>
-        </div>
-        <div class="box">
-            <h3>Makale Yükle</h3>
-            <input type="file" id="file">
-            <button onclick="upload()">Yükle</button>
-        </div>
-    </div>
 
-    <script>
-        const { Client, Databases, Storage, ID, Account } = Appwrite;
-        const client = new Client()
-            .setEndpoint('https://cloud.appwrite.io/v1') // Appwrite Endpoint
-            .setProject('BURAYA_PROJECT_ID_YAZ'); // PROJECT ID
+<div id="auth-sec" style="display:block; max-width: 400px; margin: auto;">
+    <h2>Giriş / Kayıt</h2>
+    <input type="email" id="email" placeholder="E-posta">
+    <input type="password" id="pass" placeholder="Şifre">
+    <button onclick="register()">Kayıt Ol</button>
+    <button onclick="login()">Giriş Yap</button>
+</div>
 
-        const account = new Account(client);
-        const databases = new Databases(client);
-        const storage = new Storage(client);
+<div id="main-sec" class="box">
+    <h2>Baş Yapıt: EQFT Teorisi</h2>
+    <iframe src="teori.pdf" width="100%" height="600px"></iframe>
+    <br><br>
+    <button onclick="logout()">Çıkış Yap</button>
+</div>
 
-        // Anonim Giriş (Mesaj atabilmek için şart)
-        async function init() {
-            try { await account.createAnonymousSession(); } catch (e) {}
-            load();
-        }
+<script>
+    const { Client, Account } = Appwrite;
+    const client = new Client()
+        .setEndpoint('https://cloud.appwrite.io/v1')
+        .setProject('BURAYA_PROJECT_ID_YAZ'); // Project ID'ni buraya yapıştır
 
-        async function send() {
-            const text = document.getElementById('msg').value;
-            await databases.createDocument('DATABASE_ID', 'COLLECTION_ID', ID.unique(), { text: text });
-            document.getElementById('msg').value = '';
-            load();
-        }
+    const account = new Account(client);
 
-        async function upload() {
-            const file = document.getElementById('file').files[0];
-            await storage.createFile('BUCKET_ID', ID.unique(), file);
-            alert("Dosya yüklendi!");
-        }
+    async function register() {
+        const email = document.getElementById('email').value;
+        const pass = document.getElementById('pass').value;
+        await account.create(Appwrite.ID.unique(), email, pass);
+        alert("Kayıt oldun, şimdi giriş yap!");
+    }
 
-        async function load() {
-            const res = await databases.listDocuments('DATABASE_ID', 'COLLECTION_ID');
-            document.getElementById('chat').innerHTML = res.documents.map(d => `<p>${d.text}</p>`).join('');
-        }
+    async function login() {
+        const email = document.getElementById('email').value;
+        const pass = document.getElementById('pass').value;
+        await account.createEmailPasswordSession(email, pass);
+        location.reload();
+    }
 
-        init();
-    </script>
+    async function logout() {
+        await account.deleteSession('current');
+        location.reload();
+    }
+
+    // Sayfa açılınca girişli mi değil mi kontrol et
+    account.get().then(() => {
+        document.getElementById('auth-sec').style.display = 'none';
+        document.getElementById('main-sec').style.display = 'block';
+    }).catch(() => {
+        document.getElementById('auth-sec').style.display = 'block';
+    });
+</script>
 </body>
 </html>
