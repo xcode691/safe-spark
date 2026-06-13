@@ -2,77 +2,67 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Safe-Spark | Global Portal</title>
+    <title>Safe-Spark Portal</title>
     <script src="https://cdn.jsdelivr.net/npm/appwrite@14.0.0"></script>
     <style>
-        body { background: #050505; color: #e2e8f0; font-family: sans-serif; margin: 0; padding: 20px; }
-        .container { max-width: 800px; margin: auto; }
-        .box { background: #111; border: 1px solid #333; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
-        input { width: 100%; padding: 10px; background: #000; border: 1px solid #444; color: white; margin: 10px 0; border-radius: 6px; box-sizing: border-box; }
-        button { padding: 10px 20px; background: #38bdf8; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; color: black; }
-        #chat-box { height: 250px; overflow-y: scroll; border: 1px solid #333; padding: 10px; margin-bottom: 10px; background: #080808; }
+        body { background: #050505; color: #fff; font-family: sans-serif; padding: 20px; }
+        .box { background: #111; border: 1px solid #333; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+        input { width: 100%; padding: 10px; margin: 10px 0; background: #000; border: 1px solid #444; color: #fff; box-sizing: border-box; }
+        button { padding: 10px 20px; background: #38bdf8; border: none; border-radius: 5px; cursor: pointer; color: #000; font-weight: bold; }
+        #chat { height: 200px; overflow-y: scroll; border: 1px solid #333; margin-bottom: 10px; padding: 5px; font-size: 14px; }
     </style>
 </head>
 <body>
-
-<div class="container">
-    <h1>Safe-Spark</h1>
-    
-    <div class="box">
-        <h3>Global Sohbet</h3>
-        <div id="chat-box"></div>
-        <input type="text" id="msgInput" placeholder="Mesaj yaz...">
-        <button onclick="sendMessage()">Gönder</button>
+    <div style="max-width: 600px; margin: auto;">
+        <h1>Safe-Spark</h1>
+        <div class="box">
+            <h3>Global Sohbet</h3>
+            <div id="chat">Yükleniyor...</div>
+            <input type="text" id="msg" placeholder="Mesajın...">
+            <button onclick="send()">Gönder</button>
+        </div>
+        <div class="box">
+            <h3>Makale Yükle</h3>
+            <input type="file" id="file">
+            <button onclick="upload()">Yükle</button>
+        </div>
     </div>
 
-    <div class="box">
-        <h3>Makale Yükle</h3>
-        <input type="text" id="titleInput" placeholder="Başlık">
-        <input type="file" id="fileInput">
-        <button onclick="uploadFile()">Buluta Yükle</button>
-    </div>
-</div>
+    <script>
+        const { Client, Databases, Storage, ID, Account } = Appwrite;
+        const client = new Client()
+            .setEndpoint('https://cloud.appwrite.io/v1') // Appwrite Endpoint
+            .setProject('BURAYA_PROJECT_ID_YAZ'); // PROJECT ID
 
-<script>
-    // 1. AYARLAR (Burayı Kendi Appwrite Bilgilerinle Doldur!)
-    const client = new Appwrite.Client()
-        .setEndpoint('BURAYA_API_ENDPOINT_YAZ')
-        .setProject('BURAYA_PROJECT_ID_YAZ');
+        const account = new Account(client);
+        const databases = new Databases(client);
+        const storage = new Storage(client);
 
-    const databases = new Appwrite.Databases(client);
-    const storage = new Appwrite.Storage(client);
+        // Anonim Giriş (Mesaj atabilmek için şart)
+        async function init() {
+            try { await account.createAnonymousSession(); } catch (e) {}
+            load();
+        }
 
-    // 2. MESAJ GÖNDERME
-    async function sendMessage() {
-        const text = document.getElementById('msgInput').value;
-        try {
-            await databases.createDocument('DATABASE_ID', 'COLLECTION_ID', Appwrite.ID.unique(), {
-                text: text,
-                user: "Misafir"
-            });
-            alert("Mesaj gönderildi!");
-            document.getElementById('msgInput').value = "";
-        } catch (e) { alert("Hata: " + e.message); }
-    }
+        async function send() {
+            const text = document.getElementById('msg').value;
+            await databases.createDocument('DATABASE_ID', 'COLLECTION_ID', ID.unique(), { text: text });
+            document.getElementById('msg').value = '';
+            load();
+        }
 
-    // 3. DOSYA YÜKLEME
-    async function uploadFile() {
-        const file = document.getElementById('fileInput').files[0];
-        try {
-            await storage.createFile('BUCKET_ID', Appwrite.ID.unique(), file);
-            alert("Makale başarıyla yüklendi!");
-        } catch (e) { alert("Hata: " + e.message); }
-    }
+        async function upload() {
+            const file = document.getElementById('file').files[0];
+            await storage.createFile('BUCKET_ID', ID.unique(), file);
+            alert("Dosya yüklendi!");
+        }
 
-    // 4. MESAJLARI GÜNCEL GÖSTERME (Basit versiyon)
-    async function loadMessages() {
-        const response = await databases.listDocuments('DATABASE_ID', 'COLLECTION_ID');
-        const chatBox = document.getElementById('chat-box');
-        chatBox.innerHTML = response.documents.map(d => `<p><b>Misafir:</b> ${d.text}</p>`).join('');
-    }
-    
-    setInterval(loadMessages, 5000); // 5 saniyede bir mesajları tazeler
-</script>
+        async function load() {
+            const res = await databases.listDocuments('DATABASE_ID', 'COLLECTION_ID');
+            document.getElementById('chat').innerHTML = res.documents.map(d => `<p>${d.text}</p>`).join('');
+        }
+
+        init();
+    </script>
 </body>
 </html>
